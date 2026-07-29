@@ -16,6 +16,8 @@ Edits I've made to [thomashope's native-menu-bar](https://github.com/thomashope/
 
 + Created function ``void nmb_setMenuItemShortcut(nmb_Handle menuItem, const char* shortcut)``, which lets you change the shortcut of a menu item after its creation.
 
++ Created function ``void nmb_setMenuItemShortcutFunctionKey(nmb_Handle menuItem, const int num)``, which lets you set the shortcut of a menu item to a function key F1-F19.
+
 + Created function ``void nmb_setMenuItemShortcutSpecial(nmb_Handle menuItem, bool ret, bool enter, bool bkspce, bool del)`` which allows you to set the shortcuts to special control keys.
   
 + Created function ``void nmb_setMenuItemModifiers(nmb_Handle menuItem, bool ctrl, bool opt, bool cmd, bool shift)`` which allows you to set custom modifier keys.
