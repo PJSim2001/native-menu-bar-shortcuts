@@ -123,14 +123,17 @@ nmb_Handle nmb_insertCheckMenuItem(nmb_Handle parent, int index, const char* cap
 /** Sets the shortcut for the given menu item to the specified key. */
 void nmb_setMenuItemShortcut(nmb_Handle menuItem, const char* shortcut);
 
+/** Sets the shortcut for the given menu item to the specified function key. (F1-F19)*/
+void nmb_setMenuItemShortcutFunctionKey(nmb_Handle menuItem, const int num);
+
 /** Sets the shortcut for the given menu item to a special control key.
 * @param menuItem The menu item to modify.
 * @param ret Return key
 * @param enter Numpad enter key
-* @param bkspce Delete/Backspace key
+* @param backspace Delete/Backspace key
 * @param del Forward Delete key
 */
-void nmb_setMenuItemShortcutSpecial(nmb_Handle menuItem, bool ret, bool enter, bool bkspce, bool del);
+void nmb_setMenuItemShortcutSpecial(nmb_Handle menuItem, bool ret, bool enter, bool backspace, bool del);
 
 /** Sets the modifier keys for the given menu item. Will wipe any existing modifiers.
 * @param menuItem The menu item to modify.

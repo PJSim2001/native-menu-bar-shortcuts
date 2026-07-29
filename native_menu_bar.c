@@ -607,21 +607,87 @@ void nmb_setMenuItemShortcut(nmb_Handle menuItem, const char* shortcut) {
     [((NSMenuItem*)menuItem) setKeyEquivalent:[NSString stringWithUTF8String:shortcut]];
 }
 
-void nmb_setMenuItemShortcutSpecial(nmb_Handle menuItem, bool ret, bool enter, bool bkspce, bool del) {
+void nmb_setMenuItemShortcutFunctionKey(nmb_Handle menuItem, const int num) {
+    // Cast the menu item (for cleaner code).
+    NSMenuItem * item = ((NSMenuItem*)menuItem);
+    unichar c = 0;
+    switch (num) {
+        case 1:
+            c = NSF1FunctionKey;
+            break;
+        case 2:
+            c = NSF2FunctionKey;
+            break;
+        case 3:
+            c = NSF3FunctionKey;
+            break;
+        case 4:
+            c = NSF4FunctionKey;
+            break;
+        case 5:
+            c = NSF5FunctionKey;
+            break;
+        case 6:
+            c = NSF6FunctionKey;
+            break;
+        case 7:
+            c = NSF7FunctionKey;
+            break;
+        case 8:
+            c = NSF8FunctionKey;
+            break;
+        case 9:
+            c = NSF9FunctionKey;
+            break;
+        case 10:
+            c = NSF10FunctionKey;
+            break;
+        case 11:
+            c = NSF11FunctionKey;
+            break;
+        case 12:
+            c = NSF12FunctionKey;
+            break;
+        case 13:
+            c = NSF13FunctionKey;
+            break;
+        case 14:
+            c = NSF14FunctionKey;
+            break;
+        case 15:
+            c = NSF15FunctionKey;
+            break;
+        case 16:
+            c = NSF16FunctionKey;
+            break;
+        case 17:
+            c = NSF17FunctionKey;
+            break;
+        case 18:
+            c = NSF18FunctionKey;
+            break;
+        case 19:
+            c = NSF19FunctionKey;
+            break;
+        // Function keys beyond 19 exist, but not on most keyboards, so they aren't included.
+    }
+    [item setKeyEquivalent: [NSString stringWithCharacters:&c length:1]];
+}
+
+void nmb_setMenuItemShortcutSpecial(nmb_Handle menuItem, bool ret, bool enter, bool backspace, bool del) {
     // Cast the menu item (for cleaner code).
     NSMenuItem * item = ((NSMenuItem*)menuItem);
     unichar c = 0;
     
     // Return (Newline)
-    // Newline and CarriageReturn characters both work with "return", but I'm going with Newline since
-    //      most people expect return to go to a "new line", unlike Carriage return which goes to the
-    //      end of the current line.
+    // Newline and CarriageReturn characters both work with "return", but I'm going with Newline since the usual expectation
+    // is that return creates a "new line".
     if (ret) c = NSNewlineCharacter;
     // Numpad Enter ONLY
     else if (enter) c = NSEnterCharacter;
-    // Backspace
-    else if (bkspce) c = NSBackspaceCharacter;
-    // Delete
+    // Backspace ("Delete" on Mac keyboards)
+    else if (backspace) c = NSBackspaceCharacter;
+    // Delete ("Forward Delete" on Mac keyboards)
     else if (del) c = NSDeleteCharacter;
     else return;
     
@@ -654,8 +720,6 @@ void nmb_setMenuItemModifiers(nmb_Handle menuItem, bool ctrl, bool opt, bool cmd
     // but they haven't been included as adding them in my testing either did nothing, or for
     // DeviceIndependentFlagsMask, just set CTRL-OPT-CMD-Shift.
 }
-
-
 
 void nmb_appendSeparator(nmb_Handle parent)
 {
