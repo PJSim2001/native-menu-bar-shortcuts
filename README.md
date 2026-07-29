@@ -12,7 +12,7 @@ Edits I've made to [thomashope's native-menu-bar](https://github.com/thomashope/
   + ``nmb_appendCheckMenuItem``
   + ``nmb_insertCheckMenuItem``
   
-  You can set it blank by just passing "".
+  You can set it blank by just passing "". 
 
 + Created function ``void nmb_setMenuItemShortcut(nmb_Handle menuItem, const char* shortcut)``, which lets you change the shortcut of a menu item after its creation to a standard key.
 
@@ -25,6 +25,8 @@ Edits I've made to [thomashope's native-menu-bar](https://github.com/thomashope/
 + Created function ``void nmb_setMenuItemModifiers(nmb_Handle menuItem, bool ctrl, bool opt, bool cmd, bool shift)`` which allows you to set custom modifier keys.
 
 ## Notes
+
+**On macOS, shortcuts defined as lowercase letters are automatically paired with the command modifier, while uppercase letters are paired with both command and shift. You can call nmb_setMenuItemModifiers without specifying any modifier to clear these.**
 
 The new functions are placed after ``nmb_insertCheckMenuItem`` and before ``nmb_appendSeparator``.
 
