@@ -123,26 +123,17 @@ nmb_Handle nmb_insertCheckMenuItem(nmb_Handle parent, int index, const char* cap
 /** Sets the shortcut for the given menu item to the specified key. */
 void nmb_setMenuItemShortcut(nmb_Handle menuItem, const char* shortcut);
 
-/** Sets the shortcut for the given menu item to the specified function key. (F1-F19)*/
-void nmb_setMenuItemShortcutFunctionKey(nmb_Handle menuItem, const int num);
+/** Sets the shortcut for the given menu item to the specified F[x] function key. (F1-F19)*/
+void nmb_setMenuItemShortcutFunctionF(nmb_Handle menuItem, const int num);
 
-/** Sets the shortcut for the given menu item to a special control key.
-* @param menuItem The menu item to modify.
-* @param ret Return key
-* @param enter Numpad enter key
-* @param backspace Delete/Backspace key
-* @param del Forward Delete key
-*/
-void nmb_setMenuItemShortcutSpecial(nmb_Handle menuItem, bool ret, bool enter, bool backspace, bool del);
+/** Sets the shortcut for the given menu item to the specified non-F[x] function key.*/
+void nmb_setMenuItemShortcutFunctionOther(nmb_Handle menuItem, bool home, bool end, bool pgup, bool pgdn);
 
-/** Sets the modifier keys for the given menu item. Will wipe any existing modifiers.
-* @param menuItem The menu item to modify.
-* @param ctrl Control key
-* @param opt Options key
-* @param cmd Command key
-* @param shift Shift key
-*/
-void nmb_setMenuItemModifiers(nmb_Handle menuItem, bool ctrl, bool opt, bool cmd, bool shift);
+/** Sets the shortcut for the given menu item to a special control key.*/
+void nmb_setMenuItemShortcutSpecial(nmb_Handle menuItem, bool backspace, bool ret, bool del, bool enter);
+
+/** Sets the modifier keys for the given menu item. Will wipe any existing modifiers.*/
+void nmb_setMenuItemModifiers(nmb_Handle menuItem, bool shift, bool ctrl, bool opt, bool cmd);
 
 /** Appends a separator line to the given parent menu. */
 void nmb_appendSeparator(nmb_Handle parent);

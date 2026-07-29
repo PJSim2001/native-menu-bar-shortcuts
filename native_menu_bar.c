@@ -607,7 +607,7 @@ void nmb_setMenuItemShortcut(nmb_Handle menuItem, const char* shortcut) {
     [((NSMenuItem*)menuItem) setKeyEquivalent:[NSString stringWithUTF8String:shortcut]];
 }
 
-void nmb_setMenuItemShortcutFunctionKey(nmb_Handle menuItem, const int num) {
+void nmb_setMenuItemShortcutFunctionF(nmb_Handle menuItem, const int num) {
     // Cast the menu item (for cleaner code).
     NSMenuItem * item = ((NSMenuItem*)menuItem);
     unichar c = 0;
@@ -669,26 +669,45 @@ void nmb_setMenuItemShortcutFunctionKey(nmb_Handle menuItem, const int num) {
         case 19:
             c = NSF19FunctionKey;
             break;
+        default:
+            return;
         // Function keys beyond 19 exist, but not on most keyboards, so they aren't included.
     }
     [item setKeyEquivalent: [NSString stringWithCharacters:&c length:1]];
 }
 
-void nmb_setMenuItemShortcutSpecial(nmb_Handle menuItem, bool ret, bool enter, bool backspace, bool del) {
+void nmb_setMenuItemShortcutFunctionOther(nmb_Handle menuItem, bool home, bool end, bool pgup, bool pgdn) {
     // Cast the menu item (for cleaner code).
     NSMenuItem * item = ((NSMenuItem*)menuItem);
     unichar c = 0;
     
+    if (home) c = NSHomeFunctionKey;
+    else if (end) c = NSEndFunctionKey;
+    else if (pgup) c = NSPageUpFunctionKey;
+    else if (pgdn) c = NSPageDownFunctionKey;
+    else return;
+    
+    // The clear/num lock key NSClearLineFunctionKey appears to be unsupported - it shows up as [?] and doesn't function.
+    
+    [item setKeyEquivalent: [NSString stringWithCharacters:&c length:1]];
+}
+
+
+void nmb_setMenuItemShortcutSpecial(nmb_Handle menuItem, bool backspace, bool ret, bool del, bool enter) {
+    // Cast the menu item (for cleaner code).
+    NSMenuItem * item = ((NSMenuItem*)menuItem);
+    unichar c = 0;
+    
+    // Backspace ("Delete" on Mac keyboards)
+    if (backspace) c = NSBackspaceCharacter;
     // Return (Newline)
     // Newline and CarriageReturn characters both work with "return", but I'm going with Newline since the usual expectation
     // is that return creates a "new line".
-    if (ret) c = NSNewlineCharacter;
-    // Numpad Enter ONLY
-    else if (enter) c = NSEnterCharacter;
-    // Backspace ("Delete" on Mac keyboards)
-    else if (backspace) c = NSBackspaceCharacter;
+    else if (ret) c = NSNewlineCharacter;
     // Delete ("Forward Delete" on Mac keyboards)
     else if (del) c = NSDeleteCharacter;
+    // Numpad Enter ONLY
+    else if (enter) c = NSEnterCharacter;
     else return;
     
     // The tab key can be set, but it won't detect input.
@@ -697,12 +716,15 @@ void nmb_setMenuItemShortcutSpecial(nmb_Handle menuItem, bool ret, bool enter, b
     [item setKeyEquivalent: [NSString stringWithCharacters:&c length:1]];
 }
 
-void nmb_setMenuItemModifiers(nmb_Handle menuItem, bool ctrl, bool opt, bool cmd, bool shift) {
+void nmb_setMenuItemModifiers(nmb_Handle menuItem, bool shift, bool ctrl, bool opt, bool cmd) {
     // Cast the menu item (for cleaner code) and blank out its modifiers.
     NSMenuItem * item = ((NSMenuItem*)menuItem);
     [item setKeyEquivalentModifierMask: 0];
     
     // Add each specified modifier to the item.
+    if (shift) {
+        [item setKeyEquivalentModifierMask: item.keyEquivalentModifierMask | NSEventModifierFlagShift];
+    }
     if (ctrl) {
         [item setKeyEquivalentModifierMask: item.keyEquivalentModifierMask | NSEventModifierFlagControl];
     }
@@ -711,9 +733,6 @@ void nmb_setMenuItemModifiers(nmb_Handle menuItem, bool ctrl, bool opt, bool cmd
     }
     if (cmd) {
         [item setKeyEquivalentModifierMask: item.keyEquivalentModifierMask | NSEventModifierFlagCommand];
-    }
-    if (shift) {
-        [item setKeyEquivalentModifierMask: item.keyEquivalentModifierMask | NSEventModifierFlagShift];
     }
     
     // Modifier flags do exist for "Function", "Help", "CapsLock", "DeviceIndependentFlagsMask", and "NumericPad",
