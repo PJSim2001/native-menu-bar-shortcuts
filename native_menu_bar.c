@@ -565,12 +565,12 @@ nmb_Handle nmb_insertMenu(nmb_Handle parent, int inputIndex, const char* caption
     return menu;
 }
 
-nmb_Handle nmb_appendMenuItem(nmb_Handle parent, const char* caption)
+nmb_Handle nmb_appendMenuItem(nmb_Handle parent, const char* caption, const char* shortcut)
 {
-    return nmb_insertMenuItem(parent, -1, caption);
+    return nmb_insertMenuItem(parent, -1, caption, shortcut);
 }
 
-nmb_Handle nmb_insertMenuItem(nmb_Handle parent, int inputIndex, const char* caption)
+nmb_Handle nmb_insertMenuItem(nmb_Handle parent, int inputIndex, const char* caption, const char* shortcut)
 {
     if(!parent)
     {
@@ -587,20 +587,75 @@ nmb_Handle nmb_insertMenuItem(nmb_Handle parent, int inputIndex, const char* cap
     }
 
     stringCopyOrSkip(scratchBuffer, SCRATCH_BUFFER_SIZE, caption, '_');
-    NSMenuItem* item = [(NSMenu*)parent insertItemWithTitle:[NSString stringWithCString:scratchBuffer encoding:NSUTF8StringEncoding] action:@selector(handleAction:) keyEquivalent:@"" atIndex:index];
+    NSMenuItem* item = [(NSMenu*)parent insertItemWithTitle:[NSString stringWithCString:scratchBuffer encoding:NSUTF8StringEncoding] action:@selector(handleAction:) keyEquivalent:[NSString stringWithUTF8String:shortcut] atIndex:index];
     [item setTarget:g.handler];
+
     return item;
 }
 
-nmb_Handle nmb_appendCheckMenuItem(nmb_Handle parent, const char* caption)
+nmb_Handle nmb_appendCheckMenuItem(nmb_Handle parent, const char* caption, const char* shortcut)
 {
-    return nmb_insertMenuItem(parent, -1, caption);
+    return nmb_insertMenuItem(parent, -1, caption, shortcut);
 }
 
-nmb_Handle nmb_insertCheckMenuItem(nmb_Handle parent, int inputIndex, const char* caption)
+nmb_Handle nmb_insertCheckMenuItem(nmb_Handle parent, int inputIndex, const char* caption, const char* shortcut)
 {
-    return nmb_insertMenuItem(parent, inputIndex, caption);
+    return nmb_insertMenuItem(parent, inputIndex, caption, shortcut);
 }
+
+void nmb_setMenuItemShortcut(nmb_Handle menuItem, const char* shortcut) {
+    [((NSMenuItem*)menuItem) setKeyEquivalent:[NSString stringWithUTF8String:shortcut]];
+}
+
+void nmb_setMenuItemShortcutSpecial(nmb_Handle menuItem, bool ret, bool enter, bool bkspce, bool del) {
+    // Cast the menu item (for cleaner code).
+    NSMenuItem * item = ((NSMenuItem*)menuItem);
+    unichar c = 0;
+    
+    // Return (Newline)
+    // Newline and CarriageReturn characters both work with "return", but I'm going with Newline since
+    //      most people expect return to go to a "new line", unlike Carriage return which goes to the
+    //      end of the current line.
+    if (ret) c = NSNewlineCharacter;
+    // Numpad Enter ONLY
+    else if (enter) c = NSEnterCharacter;
+    // Backspace
+    else if (bkspce) c = NSBackspaceCharacter;
+    // Delete
+    else if (del) c = NSDeleteCharacter;
+    else return;
+    
+    // The tab key can be set, but it won't detect input.
+    // The form feed key can also be set, but it isn't on most keyboards (if any?!?!?).
+    
+    [item setKeyEquivalent: [NSString stringWithCharacters:&c length:1]];
+}
+
+void nmb_setMenuItemModifiers(nmb_Handle menuItem, bool ctrl, bool opt, bool cmd, bool shift) {
+    // Cast the menu item (for cleaner code) and blank out its modifiers.
+    NSMenuItem * item = ((NSMenuItem*)menuItem);
+    [item setKeyEquivalentModifierMask: 0];
+    
+    // Add each specified modifier to the item.
+    if (ctrl) {
+        [item setKeyEquivalentModifierMask: item.keyEquivalentModifierMask | NSEventModifierFlagControl];
+    }
+    if (opt) {
+        [item setKeyEquivalentModifierMask: item.keyEquivalentModifierMask | NSEventModifierFlagOption];
+    }
+    if (cmd) {
+        [item setKeyEquivalentModifierMask: item.keyEquivalentModifierMask | NSEventModifierFlagCommand];
+    }
+    if (shift) {
+        [item setKeyEquivalentModifierMask: item.keyEquivalentModifierMask | NSEventModifierFlagShift];
+    }
+    
+    // Modifier flags do exist for "Function", "Help", "CapsLock", "DeviceIndependentFlagsMask", and "NumericPad",
+    // but they haven't been included as adding them in my testing either did nothing, or for
+    // DeviceIndependentFlagsMask, just set CTRL-OPT-CMD-Shift.
+}
+
+
 
 void nmb_appendSeparator(nmb_Handle parent)
 {

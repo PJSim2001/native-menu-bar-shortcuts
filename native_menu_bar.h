@@ -86,35 +86,60 @@ nmb_Handle nmb_insertMenu(nmb_Handle parent, int index, const char* caption);
 *
 * @param parent The parent menu handle.
 * @param caption The name of the menu item.
+* @param shortcut The keyboard shortcut of the menu item. Lowercase characters will be CMD-[x], uppercase SHIFT-CMD-[x].
 * @return The handle to the newly created menu item, or NULL on failure.
 */
-nmb_Handle nmb_appendMenuItem(nmb_Handle parent, const char* caption);
+nmb_Handle nmb_appendMenuItem(nmb_Handle parent, const char* caption, const char* shortcut);
 
 /** Creates a new menu item as a child of the parent menu. You should store the returned handle so you can respond to events from this menu item later.
 *
 * @param parent The parent menu handle.
 * @param index The index at which to insert the menu item. Negative indices insert from the end. An index of -1 is equivalent to appendXxxItem(), -2 means second last, and so on.
 * @param caption The name of the menu item.
+* @param shortcut The keyboard shortcut of the menu item. Lowercase characters will be CMD-[x], uppercase SHIFT-CMD-[x].
 * @return The handle to the newly created menu item, or NULL on failure.
 */
-nmb_Handle nmb_insertMenuItem(nmb_Handle parent, int index, const char* caption);
+nmb_Handle nmb_insertMenuItem(nmb_Handle parent, int index, const char* caption, const char* shortcut);
 
 /** Append a new checkable menu item to the given parent menu. You should store the returned handle so you can respond to events from this menu item later.
 *
 * @param parent The parent menu handle.
 * @param caption The name of the menu item.
+* @param shortcut The keyboard shortcut of the menu item. Lowercase characters will be CMD-[x], uppercase SHIFT-CMD-[x].
 * @return The handle to the newly created menu item, or NULL on failure.
  */
-nmb_Handle nmb_appendCheckMenuItem(nmb_Handle parent, const char* caption);
+nmb_Handle nmb_appendCheckMenuItem(nmb_Handle parent, const char* caption, const char* shortcut);
 
 /** Creates a new checkable menu item as a child of the parent menu. You should store the returned handle so you can respond to events from this menu item later.
 *
 * @param parent The parent menu handle.
 * @param index The index at which to insert the menu item. Negative indices insert from the end. An index of -1 is equivalent to appendXxxItem(), -2 means second last, and so on.
 * @param caption The name of the menu item.
+* @param shortcut The keyboard shortcut of the menu item. Lowercase characters will be CMD-[x], uppercase SHIFT-CMD-[x].
 * @return The handle to the newly created menu item, or NULL on failure.
 */
-nmb_Handle nmb_insertCheckMenuItem(nmb_Handle parent, int index, const char* caption);
+nmb_Handle nmb_insertCheckMenuItem(nmb_Handle parent, int index, const char* caption, const char* shortcut);
+
+/** Sets the shortcut for the given menu item to the specified key. */
+void nmb_setMenuItemShortcut(nmb_Handle menuItem, const char* shortcut);
+
+/** Sets the shortcut for the given menu item to a special control key.
+* @param menuItem The menu item to modify.
+* @param ret Return key
+* @param enter Numpad enter key
+* @param bkspce Delete/Backspace key
+* @param del Forward Delete key
+*/
+void nmb_setMenuItemShortcutSpecial(nmb_Handle menuItem, bool ret, bool enter, bool bkspce, bool del);
+
+/** Sets the modifier keys for the given menu item. Will wipe any existing modifiers.
+* @param menuItem The menu item to modify.
+* @param ctrl Control key
+* @param opt Options key
+* @param cmd Command key
+* @param shift Shift key
+*/
+void nmb_setMenuItemModifiers(nmb_Handle menuItem, bool ctrl, bool opt, bool cmd, bool shift);
 
 /** Appends a separator line to the given parent menu. */
 void nmb_appendSeparator(nmb_Handle parent);
